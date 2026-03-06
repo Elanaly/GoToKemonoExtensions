@@ -1,0 +1,16 @@
+{
+    "manifest_version": 3,
+    "name": "GoToKemono",
+    "description": "fantia.jpのファンクラブページで右クリックしてkemono.crに移動できます",
+    "version": "1.0.0",
+    "permissions": [
+        "contextMenus",
+        "tabs"
+    ],
+    "host_permissions": [
+        "https://fantia.jp/fanclubs/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    }
+}
