@@ -1,16 +1,25 @@
 // 拡張機能インストール時にコンテキストメニューを登録する
 browser.runtime.onInstalled.addListener(() => {
+    // fantia.jp用メニュー
     browser.contextMenus.create({
-        id: "goToKemono",
+        id: "goToKemonoFantia",
         title: "kemonoに移動",
         contexts: ["all"],
         documentUrlPatterns: ["https://fantia.jp/fanclubs/*"]
+    });
+
+    // fanbox.cc用メニュー
+    browser.contextMenus.create({
+        id: "goToKemonoFanbox",
+        title: "kemonoに移動",
+        contexts: ["all"],
+        documentUrlPatterns: ["https://*.fanbox.cc/*"]
     });
 });
 
 // コンテキストメニュークリック時の処理
 browser.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId === "goToKemono") {
+    if (info.menuItemId === "goToKemonoFantia") {
         // 現在のタブURLからfanclub IDを抽出する
         // 例: https://fantia.jp/fanclubs/83679?locale=jp → 83679
         const url = tab.url;
@@ -22,5 +31,19 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
             // IDが取れなければトップページへ
             browser.tabs.create({ url: "https://kemono.cr/" });
         }
+    }
+
+    if (info.menuItemId === "goToKemonoFanbox") {
+        // content scriptにメッセージを送り、ページ内のpixivリンクからIDを取得する
+        browser.tabs.sendMessage(tab.id, { type: "getPixivId" }).then((response) => {
+            if (response && response.pixivId) {
+                browser.tabs.create({ url: `https://kemono.cr/fanbox/user/${response.pixivId}` });
+            } else {
+                // pixivリンクが見つからなければトップページへ
+                browser.tabs.create({ url: "https://kemono.cr/" });
+            }
+        }).catch(() => {
+            browser.tabs.create({ url: "https://kemono.cr/" });
+        });
     }
 });

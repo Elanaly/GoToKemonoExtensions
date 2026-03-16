@@ -1,12 +1,13 @@
 {
     "manifest_version": 2,
     "name": "GoToKemono",
-    "description": "fantia.jpのファンクラブページで右クリックしてkemono.crに移動できます",
-    "version": "1.0.0",
+    "description": "fantia.jpやfanbox.ccのページで右クリックしてkemono.crに移動できます",
+    "version": "1.1.0",
     "permissions": [
         "contextMenus",
         "tabs",
-        "https://fantia.jp/fanclubs/*"
+        "https://fantia.jp/fanclubs/*",
+        "https://*.fanbox.cc/*"
     ],
     "browser_specific_settings": {
         "gecko": {
@@ -19,5 +20,12 @@
             "background.js"
         ],
         "persistent": false
-    }
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://*.fanbox.cc/*"],
+            "js": ["content.js"],
+            "run_at": "document_idle"
+        }
+    ]
 }
